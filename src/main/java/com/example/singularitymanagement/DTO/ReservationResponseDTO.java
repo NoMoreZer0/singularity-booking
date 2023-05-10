@@ -16,7 +16,6 @@ public class ReservationResponseDTO {
     private Long reservationID;
     private List<TimeslotDTO> timeslots = new ArrayList<>();
     private String roomNumber;
-    private String purpose;
 
     public ReservationResponseDTO(Reservation reservation) {
         this.reservationID = reservation.getReservationID();
@@ -25,6 +24,5 @@ public class ReservationResponseDTO {
         }
         Collections.sort(timeslots);
         this.roomNumber = reservation.getRoom().getRoomNumber();
-        this.purpose = reservation.getPurpose();
     }
 }

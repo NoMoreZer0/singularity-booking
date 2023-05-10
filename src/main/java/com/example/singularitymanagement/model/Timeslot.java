@@ -19,6 +19,8 @@ public class Timeslot implements Comparable<Timeslot>{
 
     private Long end;
 
+    private String purpose;
+
     @ManyToOne
     @JoinColumn(name = "reservation_id")
     @JsonBackReference

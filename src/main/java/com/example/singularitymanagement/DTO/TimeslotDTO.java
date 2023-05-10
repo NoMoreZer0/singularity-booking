@@ -13,13 +13,15 @@ public class TimeslotDTO implements Comparable<TimeslotDTO> {
     private Long end;
     private Long userID;
     private Long timeslotID;
+    private String purpose;
 
     @JsonCreator
-    public TimeslotDTO(@JsonProperty("start") Long start, @JsonProperty("end") Long end, @JsonProperty("userID") Long userID, @JsonProperty("timeslotID") Long timeslotID) {
+    public TimeslotDTO(@JsonProperty("start") Long start, @JsonProperty("end") Long end, @JsonProperty("userID") Long userID, @JsonProperty("timeslotID") Long timeslotID, @JsonProperty("purpose") String purpose) {
         this.start = start;
         this.end = end;
         this.userID = userID;
         this.timeslotID = timeslotID;
+        this.purpose = purpose;
     }
 
     public TimeslotDTO(Timeslot timeslot) {
@@ -27,6 +29,7 @@ public class TimeslotDTO implements Comparable<TimeslotDTO> {
         this.end = timeslot.getEnd();
         this.userID = timeslot.getUser().getId();
         this.timeslotID = timeslot.getTimeslotID();
+        this.purpose = timeslot.getPurpose();
     }
 
     @Override

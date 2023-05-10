@@ -12,12 +12,9 @@ import java.util.List;
 @NoArgsConstructor
 public class ReservationDTO {
     private List<Timeslot> timeslots;
-    private String purpose;
 
     @JsonCreator
-    public ReservationDTO(@JsonProperty("timeslots") List<Timeslot> timeslots,
-                          @JsonProperty("purpose") String purpose) {
+    public ReservationDTO(@JsonProperty("timeslots") List<Timeslot> timeslots) {
         this.timeslots = timeslots;
-        this.purpose = purpose;
     }
 }

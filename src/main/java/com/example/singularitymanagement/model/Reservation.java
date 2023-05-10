@@ -25,8 +25,6 @@ public class Reservation {
     @JoinColumn(name = "room_number")
     private Room room;
 
-    private String purpose;
-
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Timeslot> timeslots = new ArrayList<>();
@@ -45,7 +43,6 @@ public class Reservation {
 
     public Reservation(ReservationDTO reservationDTO, User user) {
         this.timeslots = reservationDTO.getTimeslots();
-        this.purpose = reservationDTO.getPurpose();
         for (Timeslot timeslot : timeslots) {
             timeslot.setUser(user);
             timeslot.setReservation(this);

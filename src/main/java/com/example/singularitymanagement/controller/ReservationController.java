@@ -82,6 +82,7 @@ public class ReservationController {
         }
     }
 
+    @CrossOrigin
     @DeleteMapping("/{roomNumber}/{timeslotID}")
     public <T> ResponseEntity <T> deleteReservationById(@PathVariable String roomNumber,
                                                         @PathVariable Long timeslotID) {
