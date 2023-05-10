@@ -7,9 +7,11 @@ import lombok.Data;
 @Data
 public class TokenDTO {
     private String token;
+    private Long userID;
 
     @JsonCreator
-    public TokenDTO(@JsonProperty("token") String token) {
+    public TokenDTO(@JsonProperty("token") String token, @JsonProperty("userID") Long userID) {
+        this.userID = userID;
         this.token = token;
     }
 }

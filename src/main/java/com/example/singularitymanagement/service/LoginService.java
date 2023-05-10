@@ -37,6 +37,6 @@ public class LoginService {
             throw new UsernameNotFoundException("username or password incorrect!");
         }
         String token = jwtService.generateToken(user.get());
-        return new TokenDTO(token);
+        return new TokenDTO(token, user.get().getId());
     }
 }
