@@ -47,7 +47,7 @@ public class ReservationController {
         return ResponseEntity.ok().body(reservations);
     }
 
-    @GetMapping("/date")
+    @PostMapping("/date")
     public ResponseEntity<List<ReservationResponseDTO>> getAllByDate(@RequestBody TimeslotDTO timeslotDTO) {
         try {
             return ResponseEntity.ok().body(reservationService.getAllByDate(timeslotDTO, ""));
@@ -56,7 +56,7 @@ public class ReservationController {
         }
     }
 
-    @GetMapping("/date/{roomNumber}")
+    @PostMapping("/date/{roomNumber}")
     public <T> ResponseEntity<T> getAllRoomByDate(@PathVariable String roomNumber,
                                                                          @RequestBody TimeslotDTO timeslotDTO) {
             try {
