@@ -1,39 +1,35 @@
 package com.example.singularitymanagement.service;
 
 import com.example.singularitymanagement.DAO.ReservationDAO;
-import com.example.singularitymanagement.DAO.TimeslotDAO;
 import com.example.singularitymanagement.DTO.ReservationDTO;
 import com.example.singularitymanagement.DTO.ReservationResponseDTO;
 import com.example.singularitymanagement.DTO.TimeslotDTO;
 import com.example.singularitymanagement.exception.NoPermissionException;
+import com.example.singularitymanagement.exception.RoomNotFoundException;
 import com.example.singularitymanagement.exception.TimeslotConflictException;
 import com.example.singularitymanagement.model.Reservation;
 import com.example.singularitymanagement.model.Room;
 import com.example.singularitymanagement.model.Timeslot;
 import com.example.singularitymanagement.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
 import java.util.*;
 
 @Service
 public class ReservationService {
     private ReservationDAO reservationDAO;
-    private UserService userService;
     private RoomService roomService;
     private TimeslotService timeslotService;
 
     @Autowired
-    public ReservationService(ReservationDAO reservationDAO, UserService userService, RoomService roomService, TimeslotService timeslotService) {
+    public ReservationService(ReservationDAO reservationDAO, RoomService roomService, TimeslotService timeslotService) {
         this.reservationDAO = reservationDAO;
-        this.userService = userService;
         this.roomService = roomService;
         this.timeslotService = timeslotService;
     }
 
-    public void addReservation(User user, String roomNumber, ReservationDTO reservationDTO) throws Exception {
+    public void addReservation(User user, String roomNumber, ReservationDTO reservationDTO) throws TimeslotConflictException, RoomNotFoundException {
         List<Reservation> reservations = reservationDAO.findAllByRoom(roomService.getByNumber(roomNumber));
         if (!reservations.isEmpty()) {
             for (Reservation reservation : reservations) {
@@ -50,7 +46,7 @@ public class ReservationService {
         }
     }
 
-    public List<ReservationResponseDTO> getAllReservationsByRoom(String roomNumber) throws Exception {
+    public List<ReservationResponseDTO> getAllReservationsByRoom(String roomNumber) throws RoomNotFoundException {
         Room room = roomService.getByNumber(roomNumber);
         List<Reservation> reservations = reservationDAO.findAllByRoom(room);
         List<ReservationResponseDTO> reservationResponseDTOS = new ArrayList<>();
@@ -78,7 +74,7 @@ public class ReservationService {
             return reservationResponseDTOS;
     }
 
-    public List<ReservationResponseDTO> getAllByDate(TimeslotDTO timeslotDTO, String roomNumber) throws Exception {
+    public List<ReservationResponseDTO> getAllByDate(TimeslotDTO timeslotDTO, String roomNumber) throws RoomNotFoundException {
         List<ReservationResponseDTO> reservationResponseDTOS = new ArrayList<>();
         List<Reservation> reservations;
         if (roomNumber.equals("")) {
@@ -114,11 +110,11 @@ public class ReservationService {
     }
     private boolean isConflict(ReservationDTO reservationDTO, List<Timeslot> timeslots) {
         for (Timeslot reservationTimeslot : reservationDTO.getTimeslots()) {
-            Date stReservation = new Date(reservationTimeslot.getStart()),
-                    endReservation = new Date(reservationTimeslot.getEnd());
+            Date stReservation = new Date(reservationTimeslot.getStart());
+            Date endReservation = new Date(reservationTimeslot.getEnd());
             for (Timeslot timeslot : timeslots) {
-                Date stCur = new Date(timeslot.getStart()),
-                        stEnd = new Date(timeslot.getEnd());
+                Date stCur = new Date(timeslot.getStart());
+                Date stEnd = new Date(timeslot.getEnd());
                 if (stReservation.equals(stCur) || stReservation.equals(stEnd) ||
                     endReservation.equals(stCur) || endReservation.equals(stEnd)) {
                     return true;
@@ -133,12 +129,10 @@ public class ReservationService {
     }
 
     private boolean isInside(Long l1, Long r1, Long l2, Long r2) {
-        Date st1 = new Date(l1), end1 = new Date(r1);
-        Date st2 = new Date(l2), end2 = new Date(r2);
-        System.out.println(st1);
-        System.out.println(end1);
-        System.out.println(st2);
-        System.out.println(end2);
+        Date st1 = new Date(l1);
+        Date end1 = new Date(r1);
+        Date st2 = new Date(l2);
+        Date end2 = new Date(r2);
         return ((st2.before(st1) || st1.equals(st2)) && (end2.after(end1) || end2.equals(end1)));
     }
 

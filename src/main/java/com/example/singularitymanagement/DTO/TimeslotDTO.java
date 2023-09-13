@@ -24,6 +24,11 @@ public class TimeslotDTO implements Comparable<TimeslotDTO> {
         this.purpose = purpose;
     }
 
+    public TimeslotDTO(Long start, Long end) {
+        this.start = start;
+        this.end = end;
+    }
+
     public TimeslotDTO(Timeslot timeslot) {
         this.start = timeslot.getStart();
         this.end = timeslot.getEnd();

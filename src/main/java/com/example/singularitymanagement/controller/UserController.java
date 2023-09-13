@@ -5,6 +5,7 @@ import com.example.singularitymanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +25,7 @@ public class UserController {
 
     @GetMapping("/{userID}")
     public <T> ResponseEntity<T> getUserProfile(@PathVariable Long userID) {
-        if (!getUser().getUsername().equals("admin") && !Objects.equals(getUser().getId(), userID)) {
+        if (!getUserDetails().getUsername().equals("admin") && !userHaveAccessToId(getUserDetails().getUsername(), userID)) {
             return (ResponseEntity<T>) ResponseEntity.badRequest().body("you have no permission");
         }
         try {
@@ -34,7 +35,19 @@ public class UserController {
         }
     }
 
-    private User getUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    private boolean userHaveAccessToId(String username, Long targetId) {
+        try {
+            User user = userService.getUserByUsername(username);
+            if (!Objects.equals(user.getId(), targetId)) {
+                return Boolean.FALSE;
+            }
+        } catch (Exception e) {
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
+    }
+
+    private UserDetails getUserDetails() {
+        return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

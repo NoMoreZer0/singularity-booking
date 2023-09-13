@@ -24,4 +24,12 @@ public class UserService {
         }
         return user.get();
     }
+
+    public User getUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> user = userDAO.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException("username not found!");
+        }
+        return user.get();
+    }
 }

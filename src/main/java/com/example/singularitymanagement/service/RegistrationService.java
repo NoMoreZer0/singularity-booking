@@ -19,7 +19,7 @@ public class RegistrationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void saveUser(UserDTO userDTO) throws Exception {
+    public void saveUser(UserDTO userDTO) throws UserNameOrEmailExistsException {
         User user = new User(userDTO);
         if (userDAO.existsByEmail(userDTO.getEmail()) || userDAO.existsByUsername(userDTO.getUsername())) {
             throw new UserNameOrEmailExistsException("username or email already exists!");

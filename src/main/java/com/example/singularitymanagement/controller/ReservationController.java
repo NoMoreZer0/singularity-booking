@@ -3,17 +3,16 @@ package com.example.singularitymanagement.controller;
 import com.example.singularitymanagement.DTO.ReservationDTO;
 import com.example.singularitymanagement.DTO.ReservationResponseDTO;
 import com.example.singularitymanagement.DTO.TimeslotDTO;
-import com.example.singularitymanagement.model.Reservation;
 import com.example.singularitymanagement.model.User;
 import com.example.singularitymanagement.service.EmailSenderService;
 import com.example.singularitymanagement.service.ReservationService;
+import com.example.singularitymanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +22,13 @@ public class ReservationController {
     private ReservationService reservationService;
     private EmailSenderService emailSenderService;
 
+    private UserService userService;
+
     @Autowired
-    public ReservationController(ReservationService reservationService, EmailSenderService emailSenderService) {
+    public ReservationController(ReservationService reservationService, EmailSenderService emailSenderService, UserService userService) {
         this.reservationService = reservationService;
         this.emailSenderService = emailSenderService;
+        this.userService = userService;
     }
 
     @GetMapping("/{roomNumber}")
@@ -75,7 +77,7 @@ public class ReservationController {
         }
         try {
             reservationService.addReservation(getUser(), roomNumber, reservationDTO);
-            emailSenderService.sendEmail(getUser(), reservationDTO, roomNumber);
+//            emailSenderService.sendEmail(getUser(), reservationDTO, roomNumber);
             return (ResponseEntity<T>) ResponseEntity.ok().body("reservations added successfully!");
         } catch (Exception e) {
             return (ResponseEntity<T>) ResponseEntity.badRequest().body(e.getMessage());
@@ -94,6 +96,8 @@ public class ReservationController {
         }
     }
     private User getUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+        return userService.getUserByUsername(username);
     }
 }

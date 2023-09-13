@@ -19,11 +19,6 @@ public class RoomService {
         this.roomDAO = roomDAO;
     }
 
-    public void saveRoom(RoomDTO roomDTO) {
-        Room room = new Room(roomDTO);
-        roomDAO.save(room);
-    }
-
     public List<Room> getAll() {
         return (List<Room>) roomDAO.findAll();
     }

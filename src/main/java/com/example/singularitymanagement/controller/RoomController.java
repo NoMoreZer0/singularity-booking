@@ -19,13 +19,7 @@ public class RoomController {
     public RoomController(RoomService roomService) {
         this.roomService = roomService;
     }
-
-    @PostMapping
-    public ResponseEntity<String> saveRoom(@RequestBody RoomDTO roomDTO) {
-        roomService.saveRoom(roomDTO);
-        return ResponseEntity.ok().body("room saved successfully!");
-    }
-
+    
     @GetMapping
     public ResponseEntity<List<Room>> getAllRooms() {
         return ResponseEntity.ok().body(roomService.getAll());
